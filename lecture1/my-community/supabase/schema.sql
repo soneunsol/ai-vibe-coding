@@ -9,6 +9,11 @@
 --          기존 데이터는 lecture1/_supabase_backup_20260908/ 에 백업되어 있습니다)
 --
 -- id 는 기존 프로젝트 관례에 맞춰 uuid 를 사용합니다.
+--
+-- 💡 SQL Editor 는 스크립트 전체를 한 트랜잭션으로 실행합니다.
+--    중간에 한 줄이라도 실패하면 전부 롤백되어 "아무 변화가 없는" 것처럼 보입니다.
+--    실행 후 결과 패널에 빨간 에러가 뜨는지 반드시 확인하세요.
+--    마지막 select 로 건수(사용자 1 / 게시물 3)가 나오면 성공입니다.
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -148,19 +153,32 @@ create policy "post_likes 취소 허용"
 --    community-api.js 의 uploadPostImage() 가 'post-images' 버킷을 사용합니다.
 -- ------------------------------------------------------------
 
-insert into storage.buckets (id, name, public)
-values ('post-images', 'post-images', true)
-on conflict (id) do update set public = true;
+-- storage.objects 는 SQL Editor 역할에 소유권이 없는 경우가 있어
+-- 정책 생성이 42501(insufficient_privilege) 로 실패할 수 있다.
+-- SQL Editor 는 스크립트 전체를 한 트랜잭션으로 실행하므로, 이 한 줄이 실패하면
+-- 위에서 만든 테이블까지 전부 롤백된다. 예외를 잡아 나머지가 살아남도록 한다.
+do $storage$
+begin
+  insert into storage.buckets (id, name, public)
+  values ('post-images', 'post-images', true)
+  on conflict (id) do update set public = true;
 
-drop policy if exists "post-images 공개 조회" on storage.objects;
-create policy "post-images 공개 조회"
-  on storage.objects for select to anon, authenticated
-  using (bucket_id = 'post-images');
+  execute 'drop policy if exists "post-images 공개 조회" on storage.objects';
+  execute 'create policy "post-images 공개 조회"
+             on storage.objects for select to anon, authenticated
+             using (bucket_id = ''post-images'')';
 
-drop policy if exists "post-images 업로드 허용" on storage.objects;
-create policy "post-images 업로드 허용"
-  on storage.objects for insert to anon, authenticated
-  with check (bucket_id = 'post-images');
+  execute 'drop policy if exists "post-images 업로드 허용" on storage.objects';
+  execute 'create policy "post-images 업로드 허용"
+             on storage.objects for insert to anon, authenticated
+             with check (bucket_id = ''post-images'')';
+
+  raise notice 'Storage: post-images 버킷과 정책을 설정했습니다.';
+exception
+  when insufficient_privilege then
+    raise notice 'Storage: 권한이 없어 건너뛰었습니다. 대시보드 Storage 화면에서 post-images 버킷을 Public 으로 직접 만들어 주세요. (이미지 업로드 외 기능은 정상 동작합니다)';
+end
+$storage$;
 
 -- ------------------------------------------------------------
 -- 5. 테스트 계정 시드
