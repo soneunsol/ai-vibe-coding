@@ -1,5 +1,6 @@
 import { supabase } from './supabase';
 import { hashPassword } from '../utils/hash-password';
+import { toUserMessage } from '../utils/supabase-error';
 
 /** 로그인 없이 둘러보기용 테스트 계정 아이디 */
 export const GUEST_USERNAME = 'guest';
@@ -20,7 +21,7 @@ export async function checkUsernameAvailable(username) {
     .eq('username', username)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) throw new Error(toUserMessage(error, '아이디 확인 중 오류가 발생했습니다.'));
 
   return !data;
 }
@@ -45,7 +46,7 @@ export async function signUpUser({ username, nickname, password }) {
     .select(USER_COLUMNS)
     .single();
 
-  if (error) throw error;
+  if (error) throw new Error(toUserMessage(error, '회원가입 중 오류가 발생했습니다.'));
 
   return data;
 }
@@ -65,7 +66,8 @@ export async function signInUser({ username, password }) {
     .eq('password_hash', passwordHash)
     .maybeSingle();
 
-  if (error) throw error;
+  // 서버/DB 장애와 "비밀번호 틀림" 을 구분해서 안내
+  if (error) throw new Error(toUserMessage(error, '로그인 중 오류가 발생했습니다.'));
   if (!data) {
     throw new Error('아이디 또는 비밀번호가 올바르지 않습니다.');
   }
@@ -85,7 +87,7 @@ export async function signInAsGuestUser() {
     .eq('username', GUEST_USERNAME)
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) throw new Error(toUserMessage(error, '테스트 계정 로그인 중 오류가 발생했습니다.'));
   if (!data) {
     throw new Error('테스트 계정을 찾을 수 없습니다. 관리자에게 문의해 주세요.');
   }

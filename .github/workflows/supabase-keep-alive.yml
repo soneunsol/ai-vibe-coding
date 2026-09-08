@@ -10,9 +10,39 @@ jobs:
   ping-supabase:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase Health Check
+      - name: Supabase 실제 테이블 조회로 핑
+        env:
+          SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
-          curl -s "${{ secrets.VITE_SUPABASE_URL }}/rest/v1/posts?select=id&limit=1" \
-            -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}"
-          echo "Supabase ping successful!"
+          set -uo pipefail
+
+          if [ -z "${SUPABASE_URL}" ] || [ -z "${SUPABASE_KEY}" ]; then
+            echo "::error::VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY 시크릿이 비어 있습니다."
+            exit 1
+          fi
+
+          # my-community 의 users, mini_sns 의 sns_users 를 각각 조회한다.
+          # 실제 테이블을 읽어야 프로젝트가 '활동 중' 으로 집계된다.
+          failed=0
+
+          for table in users sns_users; do
+            status=$(curl -s -o /tmp/ping-body.json -w '%{http_code}' --max-time 30 \
+              "${SUPABASE_URL}/rest/v1/${table}?select=id&limit=1" \
+              -H "apikey: ${SUPABASE_KEY}" \
+              -H "Authorization: Bearer ${SUPABASE_KEY}" || echo "000")
+
+            if [ "${status}" = "200" ]; then
+              echo "✅ ${table} 조회 성공 (HTTP ${status})"
+            else
+              echo "::error::${table} 조회 실패 (HTTP ${status}) — $(cat /tmp/ping-body.json 2>/dev/null)"
+              failed=1
+            fi
+          done
+
+          if [ "${failed}" -ne 0 ]; then
+            echo "::error::Supabase 핑 실패 — 프로젝트 상태와 시크릿 값을 확인하세요."
+            exit 1
+          fi
+
+          echo "Supabase 핑 완료 — 프로젝트가 정상 동작 중입니다."
