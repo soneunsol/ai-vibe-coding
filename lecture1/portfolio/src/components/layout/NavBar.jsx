@@ -21,8 +21,8 @@ const NAV_ITEMS = [
   { label: 'Home', path: '/' },
   { label: 'About Me', path: '/about' },
   { label: 'Projects', path: '/projects' },
-  { label: 'Contact', path: '/contact' },
   { label: 'Guestbook', path: '/guestbook' },
+  { label: 'Contact', path: '/contact' },
 ];
 
 const NavBar = () => {
@@ -30,11 +30,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  /**
-   * Guestbook 이 추가되어 메뉴가 5개가 되면서, 버튼을 모두 펼치면
-   * 600~700px 구간에서 툴바가 넘친다. 드로어 전환 기준을 md 로 올린다.
-   */
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleNav = (path) => {
     navigate(path);
@@ -60,8 +56,10 @@ const NavBar = () => {
           <Typography
             variant="h2"
             sx={{
-              fontSize: '1.2rem',
+              /** 태블릿 폭에서는 로고도 줄여 메뉴 5개가 들어갈 자리를 만든다 */
+              fontSize: { xs: '1.2rem', sm: '1rem', md: '1.2rem' },
               fontWeight: 700,
+              whiteSpace: 'nowrap',
               background: 'linear-gradient(90deg, #c084fc, #00c8ff)',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
@@ -125,7 +123,11 @@ const NavBar = () => {
                   ? '2px solid #7b2ff7'
                   : '2px solid transparent',
                 borderRadius: 0,
-                px: 2,
+                /** 메뉴가 5개라, 태블릿 폭에서는 여백을 줄여야 툴바가 넘치지 않는다 */
+                px: { sm: 1, md: 2 },
+                fontSize: { sm: '0.8125rem', md: '0.875rem' },
+                whiteSpace: 'nowrap',
+                minWidth: 'auto',
                 '&:hover': {
                   color: '#c084fc',
                   background: 'rgba(123, 47, 247, 0.1)',

@@ -97,6 +97,17 @@ const theme = createTheme({
             background: 'linear-gradient(135deg, #d09dff, #22d4ff)',
             boxShadow: '0 6px 28px rgba(123, 47, 247, 0.55)',
           },
+          /**
+           * background 그라데이션이 MUI 의 기본 disabled 스타일(background-color)을
+           * 덮어써서, 비활성화돼도 배경은 그대로 밝은데 글자만 흐려져 읽기 어렵다.
+           * 배경을 함께 낮춰 대비를 확보한다.
+           */
+          '&.Mui-disabled': {
+            background: 'linear-gradient(135deg, rgba(192,132,252,0.22), rgba(0,200,255,0.22))',
+            border: '1px solid rgba(160, 120, 255, 0.25)',
+            color: 'rgba(255,255,255,0.7)',
+            boxShadow: 'none',
+          },
         },
         outlinedPrimary: {
           borderColor: 'rgba(123, 47, 247, 0.5)',

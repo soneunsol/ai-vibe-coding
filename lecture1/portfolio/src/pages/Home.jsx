@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Button, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import EmailIcon from '@mui/icons-material/Email';
 
 const SKILLS = ['React', 'JavaScript', 'MUI', 'HTML/CSS', 'Git', 'Vite', 'Node.js', 'AI코딩'];
@@ -185,6 +186,15 @@ const Home = () => {
             sx={{ px: 4, py: 1.5, fontSize: '1rem' }}
           >
             Projects 보기
+          </Button>
+          <Button
+            variant="outlined"
+            size="large"
+            startIcon={<ChatBubbleOutlineIcon />}
+            onClick={() => navigate('/guestbook')}
+            sx={{ px: 4, py: 1.5, fontSize: '1rem' }}
+          >
+            Guestbook
           </Button>
           <Button
             variant="outlined"
