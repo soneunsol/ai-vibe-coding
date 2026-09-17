@@ -22,6 +22,7 @@ const NAV_ITEMS = [
   { label: 'About Me', path: '/about' },
   { label: 'Projects', path: '/projects' },
   { label: 'Contact', path: '/contact' },
+  { label: 'Guestbook', path: '/guestbook' },
 ];
 
 const NavBar = () => {
@@ -29,7 +30,11 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  /**
+   * Guestbook 이 추가되어 메뉴가 5개가 되면서, 버튼을 모두 펼치면
+   * 600~700px 구간에서 툴바가 넘친다. 드로어 전환 기준을 md 로 올린다.
+   */
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleNav = (path) => {
     navigate(path);

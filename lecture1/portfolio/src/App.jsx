@@ -7,6 +7,7 @@ import Home from './pages/Home.jsx';
 import About from './pages/About.jsx';
 import Projects from './pages/Projects.jsx';
 import Contact from './pages/Contact.jsx';
+import Guestbook from './pages/Guestbook.jsx';
 
 const App = () => (
   <Box sx={{ minHeight: '100vh', bgcolor: '#04040f', position: 'relative' }}>
@@ -18,6 +19,7 @@ const App = () => (
         <Route path="/about" element={<About />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/guestbook" element={<Guestbook />} />
       </Routes>
     </Box>
   </Box>
