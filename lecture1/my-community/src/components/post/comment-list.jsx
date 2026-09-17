@@ -13,7 +13,7 @@ import { formatRelativeTime } from '../../utils/format-date';
  *
  * Props:
  * @param {array} comments - 표시할 댓글 목록 [Required]
- * @param {number} currentUserId - 현재 로그인 사용자 번호 (본인 댓글 삭제 버튼 노출용) [Optional, 기본값: null]
+ * @param {string} currentUserId - 현재 로그인 사용자 id (uuid) (본인 댓글 삭제 버튼 노출용) [Optional, 기본값: null]
  * @param {function} onDelete - 댓글 삭제 시 실행할 함수(commentId 전달) [Optional]
  *
  * Example usage:

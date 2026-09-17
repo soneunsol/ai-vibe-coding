@@ -19,7 +19,7 @@ const POST_COLUMNS = `
  * 조회 결과를 화면에서 쓰기 좋은 형태로 가공한다.
  *
  * @param {object} row - Supabase 조회 결과 한 줄
- * @param {number|null} currentUserId - 현재 로그인 사용자 번호
+ * @param {string|null} currentUserId - 현재 로그인 사용자 id (uuid)
  * @returns {object} 좋아요/댓글 수가 계산된 게시물 객체
  */
 function mapPost(row, currentUserId) {
@@ -44,7 +44,7 @@ function mapPost(row, currentUserId) {
 /**
  * 게시물 목록을 최신순으로 조회한다.
  *
- * @param {{ currentUserId: number|null, keyword: string }} options - 조회 옵션
+ * @param {{ currentUserId: string|null, keyword: string }} options - 조회 옵션
  * @returns {Promise<object[]>} 게시물 목록
  */
 export async function fetchPosts({ currentUserId = null, keyword = '' } = {}) {
@@ -64,7 +64,7 @@ export async function fetchPosts({ currentUserId = null, keyword = '' } = {}) {
 /**
  * 게시물 1건을 조회한다.
  *
- * @param {{ postId: number, currentUserId: number|null }} options - 조회 옵션
+ * @param {{ postId: string, currentUserId: string|null }} options - 조회 옵션
  * @returns {Promise<object>} 게시물 상세
  */
 export async function fetchPost({ postId, currentUserId = null }) {
@@ -82,8 +82,8 @@ export async function fetchPost({ postId, currentUserId = null }) {
 /**
  * 게시물을 등록한다.
  *
- * @param {{ title: string, content: string, authorId: number, imageUrl: string|null, tags: string[] }} payload - 등록 정보
- * @returns {Promise<object>} 생성된 게시물의 번호
+ * @param {{ title: string, content: string, authorId: string, imageUrl: string|null, tags: string[] }} payload - 등록 정보
+ * @returns {Promise<object>} 생성된 게시물의 id (uuid)
  */
 export async function createPost({ title, content, authorId, imageUrl = null, tags = [] }) {
   const { data, error } = await supabase
@@ -100,7 +100,7 @@ export async function createPost({ title, content, authorId, imageUrl = null, ta
 /**
  * 게시물을 삭제한다. (본인 글만 UI 에서 노출)
  *
- * @param {number} postId - 삭제할 게시물 번호
+ * @param {string} postId - 삭제할 게시물 id (uuid)
  * @returns {Promise<void>}
  */
 export async function deletePost(postId) {
@@ -112,7 +112,7 @@ export async function deletePost(postId) {
 /**
  * 게시물 조회수를 1 증가시킨다.
  *
- * @param {number} postId - 대상 게시물 번호
+ * @param {string} postId - 대상 게시물 id (uuid)
  * @returns {Promise<void>}
  */
 export async function increaseViewCount(postId) {
@@ -124,7 +124,7 @@ export async function increaseViewCount(postId) {
 /**
  * 좋아요를 토글한다. (이미 눌렀으면 취소)
  *
- * @param {{ postId: number, userId: number, isLiked: boolean }} payload - 토글 정보
+ * @param {{ postId: string, userId: string, isLiked: boolean }} payload - 토글 정보
  * @returns {Promise<void>}
  */
 export async function togglePostLike({ postId, userId, isLiked }) {
@@ -148,7 +148,7 @@ export async function togglePostLike({ postId, userId, isLiked }) {
 /**
  * 특정 게시물의 댓글을 오래된 순으로 조회한다.
  *
- * @param {number} postId - 대상 게시물 번호
+ * @param {string} postId - 대상 게시물 id (uuid)
  * @returns {Promise<object[]>} 댓글 목록
  */
 export async function fetchComments(postId) {
@@ -166,7 +166,7 @@ export async function fetchComments(postId) {
 /**
  * 댓글을 등록한다.
  *
- * @param {{ postId: number, authorId: number, content: string }} payload - 등록 정보
+ * @param {{ postId: string, authorId: string, content: string }} payload - 등록 정보
  * @returns {Promise<void>}
  */
 export async function createComment({ postId, authorId, content }) {
@@ -180,7 +180,7 @@ export async function createComment({ postId, authorId, content }) {
 /**
  * 댓글을 삭제한다.
  *
- * @param {number} commentId - 삭제할 댓글 번호
+ * @param {string} commentId - 삭제할 댓글 id (uuid)
  * @returns {Promise<void>}
  */
 export async function deleteComment(commentId) {

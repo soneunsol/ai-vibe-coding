@@ -22,7 +22,7 @@ function PostDetailPage() {
   const { postId } = useParams();
   const { user } = useAuth();
 
-  const loadPost = useCallback(async () => [await fetchPostById(Number(postId))], [postId]);
+  const loadPost = useCallback(async () => [await fetchPostById(postId)], [postId]);
   const { posts, isLoading, errorMessage, likedIds, toggleLike, addComment, removeComment } =
     usePostList(loadPost);
   const [isCommentOpen, setIsCommentOpen] = useState(false);

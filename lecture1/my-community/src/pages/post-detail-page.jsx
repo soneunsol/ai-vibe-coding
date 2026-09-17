@@ -56,8 +56,8 @@ function PostDetailPage() {
 
     try {
       const [nextPost, nextComments] = await Promise.all([
-        fetchPost({ postId: Number(postId), currentUserId: user?.id ?? null }),
-        fetchComments(Number(postId)),
+        fetchPost({ postId, currentUserId: user?.id ?? null }),
+        fetchComments(postId),
       ]);
 
       setPost(nextPost);
@@ -77,7 +77,7 @@ function PostDetailPage() {
       hasCountedViewRef.current = true;
 
       try {
-        await increaseViewCount(Number(postId));
+        await increaseViewCount(postId);
       } catch {
         /** 조회수 증가 실패는 화면 이용에 영향을 주지 않으므로 무시한다. */
       }
@@ -111,8 +111,8 @@ function PostDetailPage() {
 
   const handleCreateComment = async (content) => {
     try {
-      await createComment({ postId: Number(postId), authorId: user.id, content });
-      setComments(await fetchComments(Number(postId)));
+      await createComment({ postId, authorId: user.id, content });
+      setComments(await fetchComments(postId));
     } catch (error) {
       setErrorMessage(`댓글 등록에 실패했어요. (${ error.message })`);
     }
@@ -121,7 +121,7 @@ function PostDetailPage() {
   const handleDeleteComment = async (commentId) => {
     try {
       await deleteComment(commentId);
-      setComments(await fetchComments(Number(postId)));
+      setComments(await fetchComments(postId));
     } catch (error) {
       setErrorMessage(`댓글 삭제에 실패했어요. (${ error.message })`);
     }
@@ -131,7 +131,7 @@ function PostDetailPage() {
     if (!window.confirm('이 게시물을 삭제할까요?')) return;
 
     try {
-      await deletePost(Number(postId));
+      await deletePost(postId);
       navigate('/posts', { replace: true });
     } catch (error) {
       setErrorMessage(`게시물 삭제에 실패했어요. (${ error.message })`);

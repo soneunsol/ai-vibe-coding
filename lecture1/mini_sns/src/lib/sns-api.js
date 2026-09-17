@@ -44,7 +44,7 @@ export async function fetchFeedPosts() {
 
 /**
  * 특정 사용자의 게시물 조회 (최신순)
- * @param {number} userId - 사용자 id [Required]
+ * @param {string} userId - 사용자 id (uuid) [Required]
  * @returns {Promise<Array>} 게시물 목록
  */
 export async function fetchUserPosts(userId) {
@@ -82,7 +82,7 @@ export async function createPost({ userId, caption, hashtags, location, imageUrl
 
 /**
  * 좋아요 수 변경
- * @param {number} postId - 게시물 id [Required]
+ * @param {string} postId - 게시물 id (uuid) [Required]
  * @param {number} nextCount - 변경할 좋아요 수 [Required]
  * @returns {Promise<void>}
  */
@@ -113,7 +113,7 @@ export async function createComment({ postId, userId, content }) {
 
 /**
  * 댓글 삭제
- * @param {number} commentId - 댓글 id [Required]
+ * @param {string} commentId - 댓글 id (uuid) [Required]
  * @returns {Promise<void>}
  */
 export async function deleteComment(commentId) {
@@ -123,7 +123,7 @@ export async function deleteComment(commentId) {
 
 /**
  * 게시물 1건 조회
- * @param {number} postId - 게시물 id [Required]
+ * @param {string} postId - 게시물 id (uuid) [Required]
  * @returns {Promise<object>} 게시물
  */
 export async function fetchPostById(postId) {
