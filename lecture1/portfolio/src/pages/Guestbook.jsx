@@ -16,6 +16,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import {
   fetchGuestbookEntries,
   createGuestbookEntry,
+  IS_TEMPORARY_DATA,
   NICKNAME_MAX_LENGTH,
   MESSAGE_MAX_LENGTH,
 } from '../services/guestbook';
@@ -170,7 +171,18 @@ const Guestbook = () => {
             <Typography variant="h3" sx={{ color: '#fff', fontWeight: 600, mb: 2 }}>
               방명록 남기기
             </Typography>
-            <Divider sx={{ mb: 3 }} />
+            <Divider sx={{ mb: IS_TEMPORARY_DATA ? 2 : 3 }} />
+
+            {/* 저장되는 것으로 오해하지 않도록 임시 동작임을 먼저 알린다 */}
+            {IS_TEMPORARY_DATA && (
+              <Typography
+                variant="caption"
+                sx={{ display: 'block', color: 'rgba(220,215,255,0.55)', mb: 3 }}
+              >
+                ※ 현재 방명록은 데모용 임시 데이터로 동작합니다. 남기신 글은 이 화면에서만 보이며
+                새로고침하면 사라집니다.
+              </Typography>
+            )}
 
             {submitted && (
               <Alert
@@ -183,7 +195,9 @@ const Guestbook = () => {
                 }}
                 onClose={() => setSubmitted(false)}
               >
-                방명록이 등록되었습니다. 감사합니다!
+                {IS_TEMPORARY_DATA
+                  ? '방명록이 화면에 추가되었습니다. 감사합니다!'
+                  : '방명록이 등록되었습니다. 감사합니다!'}
               </Alert>
             )}
 
