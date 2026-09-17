@@ -204,26 +204,32 @@ values (
 -- 6. 샘플 게시물 (목록이 비어 보이지 않도록)
 -- ------------------------------------------------------------
 
-insert into public.posts (title, content, tags, author_id)
-select v.title, v.content, v.tags, u.id
+-- 카드 UI 는 image_url 이 있으면 목록 카드 왼쪽에 썸네일을 보여준다
+-- (post-card.jsx). 시드 글도 비어 보이지 않도록 주제에 맞는 이미지를 넣는다.
+-- Unsplash 는 쿼리스트링으로 리사이즈/크롭을 처리하므로 w/q 만 지정한다.
+insert into public.posts (title, content, tags, image_url, author_id)
+select v.title, v.content, v.tags, v.image_url, u.id
 from public.users u
 cross join (values
   (
     'React 19 로 넘어오면서 좋았던 점 3가지',
     E'use() 훅과 Actions 덕분에 폼 처리 코드가 확 줄었습니다.\n특히 useOptimistic 은 좋아요 버튼 같은 UI 에 딱이더군요.',
-    array['react', 'frontend']
+    array['react', 'frontend'],
+    'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80'
   ),
   (
     'MUI sx prop, 언제 styled() 로 바꿔야 할까?',
     E'sx 는 빠르지만 반복되면 관리가 어려워집니다.\n같은 스타일이 3번 이상 등장하면 styled() 로 추출하는 기준을 쓰고 있어요.',
-    array['mui', 'design']
+    array['mui', 'design'],
+    'https://images.unsplash.com/photo-1541462608143-67571c6738dd?auto=format&fit=crop&w=1200&q=80'
   ),
   (
     '디자인 시스템 도입 후기',
     E'색상과 간격을 토큰으로 정리하니 리뷰에서 스타일 얘기가 사라졌습니다.\n무엇보다 신규 화면 만드는 속도가 확실히 빨라졌어요.',
-    array['design', 'designsystem']
+    array['design', 'designsystem'],
+    'https://images.unsplash.com/photo-1522542550221-31fd19575a2d?auto=format&fit=crop&w=1200&q=80'
   )
-) as v(title, content, tags)
+) as v(title, content, tags, image_url)
 where u.username = 'guest';
 
 -- ------------------------------------------------------------

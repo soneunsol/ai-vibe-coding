@@ -48,6 +48,7 @@ function PostCard({ post, onClick }) {
               component="img"
               src={ post.imageUrl }
               alt=""
+              loading="lazy"
               sx={ {
                 width: { xs: 120, md: 150 },
                 maxWidth: '100%',
@@ -55,6 +56,8 @@ function PostCard({ post, onClick }) {
                 alignSelf: 'stretch',
                 flexShrink: 0,
                 objectFit: 'cover',
+                /** 이미지를 받아오는 동안 흰 여백이 깜빡이지 않도록 자리를 채운다 */
+                bgcolor: 'action.hover',
                 borderRadius: 1,
                 border: '1px solid',
                 borderColor: 'divider',
