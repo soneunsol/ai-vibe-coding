@@ -16,7 +16,7 @@ import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import {
   fetchGuestbookEntries,
   createGuestbookEntry,
-  IS_TEMPORARY_DATA,
+  SOURCE,
   NICKNAME_MAX_LENGTH,
   MESSAGE_MAX_LENGTH,
 } from '../services/guestbook';
@@ -71,26 +71,27 @@ const SkeletonEntry = () => (
  */
 const Guestbook = () => {
   const [entries, setEntries] = useState([]);
+  const [source, setSource] = useState(SOURCE.DB);
   const [form, setForm] = useState(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState(null);
   const [submitError, setSubmitError] = useState(null);
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const loadEntries = async () => {
-      try {
-        setEntries(await fetchGuestbookEntries());
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+      /** 조회는 실패해도 시드로 폴백하므로 예외를 던지지 않는다 */
+      const { entries: loaded, source: loadedSource } = await fetchGuestbookEntries();
+
+      setEntries(loaded);
+      setSource(loadedSource);
+      setLoading(false);
     };
 
     loadEntries();
   }, []);
+
+  const isSeedMode = source === SOURCE.SEED;
 
   const handleChange = ({ target: { name, value } }) =>
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -104,7 +105,7 @@ const Guestbook = () => {
     setSubmitError(null);
 
     try {
-      const created = await createGuestbookEntry(form);
+      const created = await createGuestbookEntry({ ...form, source });
 
       /** 최신순 목록이므로 새 글을 맨 앞에 붙인다. */
       setEntries((prev) => [created, ...prev]);
@@ -171,10 +172,10 @@ const Guestbook = () => {
             <Typography variant="h3" sx={{ color: '#fff', fontWeight: 600, mb: 2 }}>
               방명록 남기기
             </Typography>
-            <Divider sx={{ mb: IS_TEMPORARY_DATA ? 2 : 3 }} />
+            <Divider sx={{ mb: isSeedMode ? 2 : 3 }} />
 
-            {/* 저장되는 것으로 오해하지 않도록 임시 동작임을 먼저 알린다 */}
-            {IS_TEMPORARY_DATA && (
+            {/* 시드로 폴백한 경우에만, 저장되지 않는다는 점을 먼저 알린다 */}
+            {isSeedMode && !loading && (
               <Typography
                 variant="caption"
                 sx={{ display: 'block', color: 'rgba(220,215,255,0.55)', mb: 3 }}
@@ -195,7 +196,7 @@ const Guestbook = () => {
                 }}
                 onClose={() => setSubmitted(false)}
               >
-                {IS_TEMPORARY_DATA
+                {isSeedMode
                   ? '방명록이 화면에 추가되었습니다. 감사합니다!'
                   : '방명록이 등록되었습니다. 감사합니다!'}
               </Alert>
@@ -263,39 +264,26 @@ const Guestbook = () => {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <ChatBubbleOutlineIcon sx={{ fontSize: 18, color: '#c084fc' }} />
           <Typography variant="body2" sx={{ color: 'rgba(220,215,255,0.75)' }}>
-            {loading ? '불러오는 중...' : `${entries.length}개의 방명록`}
+          {loading ? '불러오는 중...' : `${entries.length}개의 방명록`}
           </Typography>
         </Box>
 
-        {error && (
-          <Alert
-            severity="error"
-            sx={{
-              background: 'rgba(255, 60, 172, 0.1)',
-              border: '1px solid rgba(255, 60, 172, 0.3)',
-              color: '#ff3cac',
-            }}
-          >
-            방명록을 불러오지 못했습니다. ({error})
-          </Alert>
-        )}
+        {/* 조회는 실패해도 시드로 폴백하므로 목록 자체가 비어 보이는 일은 없다 */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          {loading && [0, 1, 2].map((key) => <SkeletonEntry key={key} />)}
 
-        {!error && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {loading && [0, 1, 2].map((key) => <SkeletonEntry key={key} />)}
-
-            {!loading && entries.length === 0 && (
-              <Card>
+          {!loading && entries.length === 0 && (
+            <Card>
                 <CardContent sx={{ p: 4, textAlign: 'center' }}>
                   <Typography variant="body1" sx={{ color: 'rgba(220,215,255,0.7)' }}>
                     아직 방명록이 없습니다. 첫 번째 글을 남겨주세요!
                   </Typography>
                 </CardContent>
-              </Card>
+            </Card>
             )}
 
-            {!loading && entries.map(({ id, nickname, message, created_at: createdAt }) => (
-              <Card key={id}>
+          {!loading && entries.map(({ id, nickname, message, created_at: createdAt }) => (
+            <Card key={id}>
                 <CardContent sx={{ p: 3 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1.5 }}>
                     <Box
@@ -339,10 +327,9 @@ const Guestbook = () => {
                     {message}
                   </Typography>
                 </CardContent>
-              </Card>
-            ))}
-          </Box>
-        )}
+            </Card>
+          ))}
+        </Box>
       </Box>
     </Box>
   );
