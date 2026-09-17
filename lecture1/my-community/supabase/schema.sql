@@ -154,9 +154,14 @@ create policy "post_likes 취소 허용"
 -- ------------------------------------------------------------
 
 -- storage.objects 는 SQL Editor 역할에 소유권이 없는 경우가 있어
--- 정책 생성이 42501(insufficient_privilege) 로 실패할 수 있다.
--- SQL Editor 는 스크립트 전체를 한 트랜잭션으로 실행하므로, 이 한 줄이 실패하면
--- 위에서 만든 테이블까지 전부 롤백된다. 예외를 잡아 나머지가 살아남도록 한다.
+-- 정책 생성이 42501(insufficient_privilege) 등으로 실패할 수 있다.
+-- SQL Editor 는 스크립트 전체를 한 트랜잭션으로 실행하므로, 여기서 그냥 실패하면
+-- 위에서 만든 테이블까지 전부 롤백된다. 그래서 예외를 잡아 나머지를 살린다.
+--
+-- ⚠️ 단, 예외를 조용히 삼키면 "버킷이 없는데 성공한 것처럼" 끝나 버린다.
+--    (실제로 이 때문에 버킷 없이 배포되어 이미지 업로드가 동작하지 않았다)
+--    그래서 실패는 warning 으로 올리고, 아래 7번 확인 쿼리가 버킷과 정책의
+--    실제 상태를 결과 행으로 보여준다. 결과 패널의 '이미지업로드' 값을 꼭 볼 것.
 do $storage$
 begin
   insert into storage.buckets (id, name, public)
@@ -175,8 +180,9 @@ begin
 
   raise notice 'Storage: post-images 버킷과 정책을 설정했습니다.';
 exception
-  when insufficient_privilege then
-    raise notice 'Storage: 권한이 없어 건너뛰었습니다. 대시보드 Storage 화면에서 post-images 버킷을 Public 으로 직접 만들어 주세요. (이미지 업로드 외 기능은 정상 동작합니다)';
+  when others then
+    raise warning 'Storage 설정 실패 [%] % — 이 파일 맨 아래 8번 수동 설정 안내를 따르세요.',
+      sqlstate, sqlerrm;
 end
 $storage$;
 
@@ -222,10 +228,46 @@ where u.username = 'guest';
 
 -- ------------------------------------------------------------
 -- 7. 확인
+--    '이미지업로드' 열이 ✅ 가 아니면 아래 8번을 따르세요.
 -- ------------------------------------------------------------
 
 select
   (select count(*) from public.users)      as 사용자수,
   (select count(*) from public.posts)      as 게시물수,
   (select count(*) from public.comments)   as 댓글수,
-  (select count(*) from public.post_likes) as 좋아요수;
+  (select count(*) from public.post_likes) as 좋아요수,
+  case
+    when to_regclass('storage.buckets') is null
+      or not has_table_privilege('storage.buckets', 'select')
+      then '❓ Storage 확인 불가 (8번 참고)'
+    when not exists (
+      select 1 from storage.buckets where id = 'post-images'
+    ) then '❌ 버킷 없음 (8번 참고)'
+    when not exists (
+      select 1 from pg_policies
+       where schemaname = 'storage'
+         and tablename  = 'objects'
+         and policyname = 'post-images 업로드 허용'
+    ) then '❌ 업로드 정책 없음 (8번 참고)'
+    else '✅ 정상'
+  end as 이미지업로드;
+
+-- ------------------------------------------------------------
+-- 8. Storage 수동 설정 (7번이 ❌ 일 때만)
+--
+--    (1) 대시보드 → Storage → New bucket
+--        Name: post-images / Public bucket 토글 ON → Save
+--        ※ "Public buckets are not protected" 안내는 정상입니다.
+--          공개 읽기는 의도한 동작이고, 업로드는 (2) 의 정책이 막아줍니다.
+--
+--    (2) SQL Editor 에서 아래 두 줄을 실행 (업로드에 반드시 필요)
+--
+--        drop policy if exists "post-images 업로드 허용" on storage.objects;
+--        create policy "post-images 업로드 허용"
+--          on storage.objects for insert to anon, authenticated
+--          with check (bucket_id = 'post-images');
+--
+--    공개 버킷은 읽기 정책이 없어도 공개 URL 로 조회되므로 select 정책은 선택입니다.
+--    삭제(delete) 정책은 일부러 만들지 않습니다 — anon 에게 주면 누구나 남의
+--    이미지를 지울 수 있고, 현재 앱에는 이미지 삭제 기능도 없습니다.
+-- ------------------------------------------------------------
