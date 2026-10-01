@@ -103,6 +103,15 @@ grant execute on function public.increase_post_view_count(uuid) to anon, authent
 --    (실서비스에서는 Supabase Auth + auth.uid() 기반 정책으로 전환 권장)
 -- ------------------------------------------------------------
 
+-- 2026-10-30 부터 public 스키마의 새 테이블은 Data API 권한이 자동 부여되지 않으므로 명시한다.
+-- 실제로 허용되는 행 범위는 아래 RLS 정책이 결정한다.
+grant select, insert                 on public.users      to anon, authenticated;
+grant select, insert, update, delete on public.posts      to anon, authenticated;
+grant select, insert, delete         on public.comments   to anon, authenticated;
+grant select, insert, delete         on public.post_likes to anon, authenticated;
+grant select, insert, update, delete
+  on public.users, public.posts, public.comments, public.post_likes to service_role;
+
 alter table public.users      enable row level security;
 alter table public.posts      enable row level security;
 alter table public.comments   enable row level security;

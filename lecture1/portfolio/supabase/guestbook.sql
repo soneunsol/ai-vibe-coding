@@ -34,6 +34,11 @@ create index idx_guestbook_created_at on public.guestbook (created_at desc);
 --    (정책이 없으면 RLS 가 기본 거부하므로 별도 조치가 필요 없습니다)
 -- ------------------------------------------------------------
 
+-- 2026-10-30 부터 public 스키마의 새 테이블은 Data API 권한이 자동 부여되지 않으므로 명시한다.
+-- anon 에게도 update / delete 권한은 주지 않는다 (위 설명과 같은 이유).
+grant select, insert on public.guestbook to anon, authenticated;
+grant select, insert, update, delete on public.guestbook to service_role;
+
 alter table public.guestbook enable row level security;
 
 create policy "guestbook 조회 허용"

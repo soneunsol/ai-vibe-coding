@@ -76,6 +76,14 @@ create index idx_sns_comments_post_id on public.sns_comments (post_id);
 --    (실서비스에서는 Supabase Auth + auth.uid() 기반 정책으로 전환 권장)
 -- ------------------------------------------------------------
 
+-- 2026-10-30 부터 public 스키마의 새 테이블은 Data API 권한이 자동 부여되지 않으므로 명시한다.
+-- 실제로 허용되는 행 범위는 아래 RLS 정책이 결정한다.
+grant select, insert         on public.sns_users    to anon, authenticated;
+grant select, insert, update on public.sns_posts    to anon, authenticated;
+grant select, insert, delete on public.sns_comments to anon, authenticated;
+grant select, insert, update, delete
+  on public.sns_users, public.sns_posts, public.sns_comments to service_role;
+
 alter table public.sns_users    enable row level security;
 alter table public.sns_posts    enable row level security;
 alter table public.sns_comments enable row level security;
