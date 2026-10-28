@@ -145,6 +145,7 @@ const Guestbook = () => {
             sx={{
               color: '#fff',
               fontWeight: 700,
+              fontSize: { xs: '1.75rem', md: '2.125rem' },
               textShadow: '0 0 20px rgba(123,47,247,0.5)',
               mb: 2,
             }}
@@ -168,7 +169,7 @@ const Guestbook = () => {
 
         {/* 작성 폼 */}
         <Card sx={{ mb: 3 }}>
-          <CardContent sx={{ p: 4 }}>
+          <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
             <Typography variant="h3" sx={{ color: '#fff', fontWeight: 600, mb: 2 }}>
               방명록 남기기
             </Typography>

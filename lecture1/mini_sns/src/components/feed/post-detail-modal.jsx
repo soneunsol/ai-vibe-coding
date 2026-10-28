@@ -5,11 +5,8 @@ import Typography from '@mui/material/Typography';
 import CloseIcon from '@mui/icons-material/Close';
 import PostDetailView from './post-detail-view';
 
-/** 하단바 높이 (모달이 하단바를 덮지 않도록 계산에 사용) */
-const BOTTOM_NAV_OFFSET = 'calc(62px + env(safe-area-inset-bottom))';
-
 /**
- * PostDetailModal 컴포넌트 — 게시물 상세를 전체화면 모달(하단바 제외 영역)로 표시
+ * PostDetailModal 컴포넌트 — 게시물 상세를 전체화면 모달로 표시
  *
  * Props:
  * @param {boolean} isOpen - 모달 표시 여부 [Required]
@@ -37,9 +34,6 @@ function PostDetailModal({
       slotProps={ {
         backdrop: {
           sx: {
-            top: 0,
-            bottom: BOTTOM_NAV_OFFSET,
-            height: 'auto',
             bgcolor: 'rgba(20, 12, 6, 0.55)',
             backdropFilter: 'blur(6px)',
           },
@@ -48,9 +42,8 @@ function PostDetailModal({
     >
       <Box
         sx={ {
-          position: 'fixed',
-          top: 0,
-          bottom: BOTTOM_NAV_OFFSET,
+          position: 'absolute',
+          inset: 0,
           left: '50%',
           transform: 'translateX(-50%)',
           width: '100%',

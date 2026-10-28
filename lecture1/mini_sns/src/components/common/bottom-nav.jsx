@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
@@ -21,18 +22,14 @@ const NAV_ITEMS = [
 
 /**
  * BottomNav 컴포넌트 — 홈/모임/작성(중앙)/채팅/마이페이지 하단 내비게이션
- *
- * Example usage:
- * <BottomNav />
+ * body에 Portal로 렌더링하여 MUI Modal(z-index 1300) 위에 표시
  */
 function BottomNav() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  /** 현재 경로가 해당 메뉴에 해당하는지 판별 */
   const isActive = (path) => (path === '/' ? pathname === '/' : pathname.startsWith(path));
 
-  /** 좌우 메뉴 버튼 렌더링 */
   const renderItem = ({ path, label, Icon, ActiveIcon }) => {
     const active = isActive(path);
     const IconComponent = active ? ActiveIcon : Icon;
@@ -60,13 +57,17 @@ function BottomNav() {
     );
   };
 
-  return (
+  return createPortal(
     <Paper
       elevation={ 0 }
       sx={ {
-        position: 'sticky',
+        position: 'fixed',
         bottom: 0,
-        zIndex: 1100,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '100%',
+        maxWidth: 480,
+        zIndex: 1400,
         borderTop: '1px solid',
         borderColor: 'divider',
         bgcolor: 'rgba(255, 255, 255, 0.95)',
@@ -97,7 +98,8 @@ function BottomNav() {
 
         { NAV_ITEMS.slice(2).map(renderItem) }
       </Box>
-    </Paper>
+    </Paper>,
+    document.body,
   );
 }
 

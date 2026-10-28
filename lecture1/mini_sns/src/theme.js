@@ -37,6 +37,11 @@ const theme = createTheme({
   },
   spacing: 8,
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        html: { overflowY: 'scroll' },
+      },
+    },
     MuiButton: {
       styleOverrides: {
         root: { borderRadius: 12, boxShadow: 'none' },

@@ -66,6 +66,7 @@ const Contact = () => {
             sx={{
               color: '#fff',
               fontWeight: 700,
+              fontSize: { xs: '1.75rem', md: '2.125rem' },
               textShadow: '0 0 20px rgba(123,47,247,0.5)',
               mb: 2,
             }}
@@ -89,7 +90,7 @@ const Contact = () => {
 
         {/* SNS 링크 */}
         <Card sx={{ mb: 3 }}>
-          <CardContent sx={{ p: 4 }}>
+          <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
             <Typography variant="h3" sx={{ color: '#fff', fontWeight: 600, mb: 2 }}>
               연락처
             </Typography>
@@ -134,7 +135,7 @@ const Contact = () => {
 
         {/* 메시지 폼 */}
         <Card>
-          <CardContent sx={{ p: 4 }}>
+          <CardContent sx={{ p: { xs: 2.5, md: 4 } }}>
             <Typography variant="h3" sx={{ color: '#fff', fontWeight: 600, mb: 2 }}>
               메시지 보내기
             </Typography>

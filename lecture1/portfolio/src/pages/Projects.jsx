@@ -219,6 +219,7 @@ const Projects = () => {
             sx={{
               color: '#fff',
               fontWeight: 700,
+              fontSize: { xs: '1.75rem', md: '2.125rem' },
               textShadow: '0 0 20px rgba(123,47,247,0.5)',
               mb: 2,
             }}

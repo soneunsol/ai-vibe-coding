@@ -177,13 +177,13 @@ const Home = () => {
         </Box>
 
         {/* CTA 버튼 */}
-        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, justifyContent: 'center', alignItems: 'center' }}>
           <Button
             variant="contained"
             size="large"
             endIcon={<ArrowForwardIcon />}
             onClick={() => navigate('/projects')}
-            sx={{ px: 4, py: 1.5, fontSize: '1rem' }}
+            sx={{ px: 4, py: 1.5, fontSize: '1rem', whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
           >
             Projects 보기
           </Button>
@@ -192,7 +192,7 @@ const Home = () => {
             size="large"
             startIcon={<ChatBubbleOutlineIcon />}
             onClick={() => navigate('/guestbook')}
-            sx={{ px: 4, py: 1.5, fontSize: '1rem' }}
+            sx={{ px: 4, py: 1.5, fontSize: '1rem', whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
           >
             Guestbook
           </Button>
@@ -201,7 +201,7 @@ const Home = () => {
             size="large"
             startIcon={<EmailIcon />}
             onClick={() => navigate('/contact')}
-            sx={{ px: 4, py: 1.5, fontSize: '1rem' }}
+            sx={{ px: 4, py: 1.5, fontSize: '1rem', whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
           >
             Contact
           </Button>

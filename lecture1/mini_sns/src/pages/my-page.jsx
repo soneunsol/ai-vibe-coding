@@ -20,13 +20,9 @@ import { usePostList } from '../hooks/use-post-list';
 import { useAuth } from '../hooks/use-auth';
 import { NOTIFICATIONS } from '../data/mock-data';
 
-/** 팔로우/팔로워 수는 DB 스키마에 없으므로 사용자 id 기반 목업 값으로 표시 */
-function getFollowCounts(userId) {
-  const base = (userId ?? 1) * 37;
-  return {
-    followers: 120 + (base % 380),
-    following: 80 + (base % 210),
-  };
+/** 팔로우/팔로워 수는 DB 스키마에 없으므로 고정 목업 값으로 표시 */
+function getFollowCounts() {
+  return { followers: 328, following: 156 };
 }
 
 /**

@@ -47,11 +47,16 @@ function TopBar({ notificationCount = 0 }) {
         <ButtonBase
           aria-label="홈으로 이동"
           onClick={ () => navigate('/') }
+          disableRipple
+          disableTouchRipple
           sx={ {
             borderRadius: 2,
             px: 0.5,
             py: 0.25,
-            '&:hover': { bgcolor: 'secondary.light' },
+            bgcolor: 'transparent',
+            '&:hover': { bgcolor: 'transparent' },
+            '&:active': { bgcolor: 'transparent' },
+            '&:focus-visible': { bgcolor: 'transparent' },
           } }
         >
           <BrandLogo size={ 32 } />

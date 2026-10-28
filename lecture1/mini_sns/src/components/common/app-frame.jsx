@@ -61,6 +61,7 @@ function AppFrame({
             minHeight: isFullHeight ? 0 : 'auto',
             display: 'flex',
             flexDirection: 'column',
+            pb: isBottomNavVisible ? '62px' : 0,
           } }
         >
           { children }

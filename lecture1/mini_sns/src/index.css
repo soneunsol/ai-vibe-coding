@@ -10,6 +10,7 @@ body {
   padding: 0;
   width: 100%;
   min-height: 100vh;
+  overflow-y: scroll;
   background: #f5efe9;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

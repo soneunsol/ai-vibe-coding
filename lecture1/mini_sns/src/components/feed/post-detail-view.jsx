@@ -39,7 +39,8 @@ function PostDetailView({ post, isLiked = false, onToggleLike, onOpenComments })
         display: 'flex',
         flexDirection: 'column',
         bgcolor: 'background.paper',
-        overflow: 'hidden',
+        overflowY: 'auto',
+        overflowX: 'hidden',
       } }
     >
       { /* 상단: 프로필 이미지 · 닉네임 · 위치 정보 */ }
@@ -82,7 +83,7 @@ function PostDetailView({ post, isLiked = false, onToggleLike, onOpenComments })
       </Box>
 
       { /* 중단: 남은 공간을 모두 채우는 이미지 */ }
-      <Box sx={ { flex: 1, minHeight: 0, bgcolor: '#1B1310' } }>
+      <Box sx={ { flex: 1, minHeight: 120, bgcolor: '#1B1310' } }>
         <Box
           component="img"
           src={ hasImageError ? getFallbackImageUrl(post.id) : post.image_url }
