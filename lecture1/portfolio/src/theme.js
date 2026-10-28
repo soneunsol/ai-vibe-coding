@@ -41,6 +41,16 @@ const theme = createTheme({
   },
   spacing: 8,
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          scrollbarWidth: 'none',
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         root: {
