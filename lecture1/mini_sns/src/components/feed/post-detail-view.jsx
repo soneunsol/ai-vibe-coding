@@ -82,8 +82,8 @@ function PostDetailView({ post, isLiked = false, onToggleLike, onOpenComments })
         </Box>
       </Box>
 
-      { /* 중단: 이미지 (남은 공간 채우되 최대 50vh) */ }
-      <Box sx={ { flex: 1, minHeight: 120, maxHeight: '50vh', bgcolor: '#1B1310' } }>
+      { /* 중단: 이미지 (남은 공간 채움) */ }
+      <Box sx={ { flex: 1, minHeight: 120, bgcolor: '#1B1310' } }>
         <Box
           component="img"
           src={ hasImageError ? getFallbackImageUrl(post.id) : post.image_url }
