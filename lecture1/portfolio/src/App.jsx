@@ -12,21 +12,26 @@ import Guestbook from './pages/Guestbook.jsx';
 const ScrollIndicator = () => {
   const thumbRef = useRef(null);
   const timerRef = useRef(null);
+  const lastScrollRef = useRef(0);
 
   const update = useCallback(() => {
     const el = thumbRef.current;
     if (!el) return;
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollHeight <= clientHeight) { el.style.opacity = '0'; return; }
+    const isScrollable = scrollHeight > clientHeight + 1;
+    const isScrolling = Math.abs(scrollTop - lastScrollRef.current) > 0;
+    lastScrollRef.current = scrollTop;
+
+    if (!isScrollable || !isScrolling) { el.style.opacity = '0'; return; }
+
     const ratio = clientHeight / scrollHeight;
     const thumbH = Math.max(ratio * clientHeight, 30);
-    const trackSpace = clientHeight - thumbH;
-    const top = (scrollTop / (scrollHeight - clientHeight)) * trackSpace;
+    const top = (scrollTop / (scrollHeight - clientHeight)) * (clientHeight - thumbH);
     el.style.height = `${thumbH}px`;
     el.style.top = `${top}px`;
     el.style.opacity = '1';
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(() => { if (el) el.style.opacity = '0'; }, 1000);
+    timerRef.current = setTimeout(() => { if (el) el.style.opacity = '0'; }, 1200);
   }, []);
 
   useEffect(() => {
@@ -37,9 +42,10 @@ const ScrollIndicator = () => {
 
   return (
     <div ref={thumbRef} style={{
-      position: 'fixed', right: 2, width: 4, borderRadius: 2, zIndex: 9999,
-      background: 'rgba(160,120,255,0.4)', opacity: 0, transition: 'opacity 0.3s',
-      pointerEvents: 'none',
+      position: 'fixed', right: 3, width: 5, borderRadius: 3, zIndex: 9999,
+      background: 'linear-gradient(180deg, rgba(123,47,247,0.5), rgba(0,200,255,0.4))',
+      opacity: 0, transition: 'opacity 0.4s ease',
+      pointerEvents: 'none', boxShadow: '0 0 8px rgba(123,47,247,0.3)',
     }} />
   );
 };
