@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Box } from '@mui/material';
 import NavBar from './components/layout/NavBar.jsx';
@@ -9,23 +9,7 @@ import Projects from './pages/Projects.jsx';
 import Contact from './pages/Contact.jsx';
 import Guestbook from './pages/Guestbook.jsx';
 
-const App = () => {
-  useEffect(() => {
-    let timer;
-    const onScroll = () => {
-      document.documentElement.classList.add('is-scrolling');
-      document.body.classList.add('is-scrolling');
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        document.documentElement.classList.remove('is-scrolling');
-        document.body.classList.remove('is-scrolling');
-      }, 1000);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => { window.removeEventListener('scroll', onScroll); clearTimeout(timer); };
-  }, []);
-
-  return (
+const App = () => (
   <Box sx={{ minHeight: '100vh', bgcolor: '#04040f', position: 'relative' }}>
     <AuroraBackground />
     <Box sx={{ position: 'relative', zIndex: 1 }}>
@@ -40,7 +24,5 @@ const App = () => {
     </Box>
   </Box>
 );
-
-};
 
 export default App;

@@ -50,10 +50,6 @@ const theme = createTheme({
         body: {
           scrollbarWidth: 'none',
           '&::-webkit-scrollbar': { display: 'none' },
-          '&.is-scrolling, &.is-scrolling ~ *': {
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'rgba(160,120,255,0.3) transparent',
-          },
         },
       },
     },
