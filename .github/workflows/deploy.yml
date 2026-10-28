@@ -24,11 +24,11 @@ jobs:
       - name: Node.js 설정
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
       - name: 포트폴리오 의존성 설치
         working-directory: lecture1/portfolio
-        run: npm install
+        run: npm install --no-package-lock
 
       - name: 포트폴리오 빌드
         working-directory: lecture1/portfolio
@@ -39,22 +39,18 @@ jobs:
 
       - name: my-community 의존성 설치
         working-directory: lecture1/my-community
-        run: npm install
+        run: npm install --no-package-lock
 
       - name: my-community 빌드
         working-directory: lecture1/my-community
-        # Supabase 연결 정보는 lecture1/my-community/.env.production 을 사용합니다
-        # (여기서 secrets 를 주입하면 .env.production 보다 우선해 덮어씁니다)
         run: npm run build
 
       - name: mini_sns 의존성 설치
         working-directory: lecture1/mini_sns
-        run: npm install
+        run: npm install --no-package-lock
 
       - name: mini_sns 빌드
         working-directory: lecture1/mini_sns
-        # Supabase 연결 정보는 lecture1/mini_sns/.env.production 을 사용합니다
-        # (여기서 secrets 를 주입하면 .env.production 보다 우선해 덮어씁니다)
         run: npm run build
 
       - name: 배포 디렉토리 합치기
@@ -66,9 +62,6 @@ jobs:
           mkdir -p combined-dist/mini_sns
           cp -r lecture1/mini_sns/dist/. combined-dist/mini_sns/
 
-      # GitHub Pages 는 없는 경로에 HTTP 404 를 돌려주므로(404.html 리다이렉트 전 콘솔 에러 발생)
-      # 포트폴리오 라우트마다 index.html 을 복사해 직접 접속/새로고침 시에도 200 으로 응답하게 한다.
-      # lecture1/portfolio/src/App.jsx 의 Route 를 추가하면 여기에도 추가할 것.
       - name: 포트폴리오 라우트별 index.html 생성
         run: |
           for route in about projects contact guestbook; do
