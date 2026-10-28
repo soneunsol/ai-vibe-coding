@@ -1,0 +1,136 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+  background: #04040f;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 별빛 */
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.star {
+  position: absolute;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  animation: twinkle var(--d) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0; }
+  50%       { opacity: var(--o); }
+}
+
+/* 오로라 */
+.aurora {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.aurora-band {
+  position: absolute;
+  width: 200%;
+  filter: blur(110px);
+  transform-origin: center center;
+}
+.aurora-band:nth-child(1) {
+  height: 380px;
+  border-radius: 62% 38% 55% 45% / 48% 52% 48% 52%;
+  background: linear-gradient(135deg,
+    #00ff87 0%, #00e5ff 25%, #7b2ff7 55%, #ff3cac 80%, #00e5ff 100%);
+  top: -180px; left: -50%; opacity: 0.36;
+  animation: flow1 18s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.aurora-band:nth-child(2) {
+  height: 300px;
+  border-radius: 45% 55% 40% 60% / 55% 45% 55% 45%;
+  background: linear-gradient(135deg,
+    #ff6b6b 0%, #ffd93d 20%, #6bcb77 50%, #4d96ff 75%, #c77dff 100%);
+  top: 30px; left: -35%; opacity: 0.20;
+  animation: flow2 24s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+.aurora-band:nth-child(3) {
+  height: 260px;
+  border-radius: 55% 45% 62% 38% / 42% 58% 42% 58%;
+  background: linear-gradient(135deg,
+    #c77dff 0%, #00f5a0 35%, #00c8ff 60%, #ff6fcf 100%);
+  top: 160px; left: -45%; opacity: 0.16;
+  animation: flow3 30s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+@keyframes flow1 {
+  0%   { transform: rotate(-28deg) translate(0%,    0px) scaleX(1)    scaleY(1);    }
+  15%  { transform: rotate(-26deg) translate(3%,  -28px) scaleX(1.04) scaleY(0.94); }
+  35%  { transform: rotate(-29deg) translate(6%,   20px) scaleX(1.07) scaleY(1.12); }
+  50%  { transform: rotate(-27deg) translate(4%,  -16px) scaleX(0.98) scaleY(0.96); }
+  70%  { transform: rotate(-30deg) translate(7%,   30px) scaleX(1.05) scaleY(1.08); }
+  85%  { transform: rotate(-26deg) translate(2%,  -10px) scaleX(1.02) scaleY(0.97); }
+  100% { transform: rotate(-28deg) translate(0%,    0px) scaleX(1)    scaleY(1);    }
+}
+@keyframes flow2 {
+  0%   { transform: rotate(-26deg) translate(0%,    0px) scaleX(1)    scaleY(1);    }
+  20%  { transform: rotate(-28deg) translate(-4%,  24px) scaleX(1.06) scaleY(1.15); }
+  40%  { transform: rotate(-24deg) translate(2%,  -18px) scaleX(0.96) scaleY(0.90); }
+  60%  { transform: rotate(-27deg) translate(-3%,  28px) scaleX(1.04) scaleY(1.10); }
+  80%  { transform: rotate(-25deg) translate(3%,  -12px) scaleX(0.98) scaleY(0.94); }
+  100% { transform: rotate(-26deg) translate(0%,    0px) scaleX(1)    scaleY(1);    }
+}
+@keyframes flow3 {
+  0%   { transform: rotate(-30deg) translate(0%,    0px) scaleX(1)    scaleY(1);    }
+  18%  { transform: rotate(-27deg) translate(4%,   22px) scaleX(1.05) scaleY(1.14); }
+  38%  { transform: rotate(-31deg) translate(1%,  -20px) scaleX(0.95) scaleY(0.92); }
+  58%  { transform: rotate(-28deg) translate(6%,   26px) scaleX(1.07) scaleY(1.10); }
+  78%  { transform: rotate(-30deg) translate(2%,  -14px) scaleX(0.97) scaleY(0.95); }
+  100% { transform: rotate(-30deg) translate(0%,    0px) scaleX(1)    scaleY(1);    }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-10px); }
+}
+
+/* 글래스모피즘 카드 */
+.glass-card {
+  background: linear-gradient(
+    160deg,
+    rgba(28, 16, 56, 0.75) 0%,
+    rgba(10, 10, 32, 0.70) 60%,
+    rgba(8, 22, 52, 0.75) 100%
+  );
+  border: 1px solid rgba(160, 120, 255, 0.18);
+  border-radius: 20px;
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 2px 1px rgba(255,255,255,0.06) inset,
+    0 -2px 6px rgba(0,0,0,0.4) inset,
+    0 24px 64px rgba(80, 30, 180, 0.22),
+    0 8px 32px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 2px 1px rgba(255,255,255,0.08) inset,
+    0 -2px 6px rgba(0,0,0,0.4) inset,
+    0 32px 80px rgba(80, 30, 180, 0.32),
+    0 12px 40px rgba(0, 0, 0, 0.5);
+}
