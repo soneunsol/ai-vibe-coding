@@ -82,29 +82,28 @@ function PostDetailView({ post, isLiked = false, onToggleLike, onOpenComments })
         </Box>
       </Box>
 
-      { /* 중단: 남은 공간을 모두 채우는 이미지 */ }
-      <Box sx={ { flex: 1, minHeight: 120, bgcolor: '#1B1310' } }>
+      { /* 중단: 이미지 (최대 40vh) */ }
+      <Box sx={ { flexShrink: 0, maxHeight: '40vh', bgcolor: '#1B1310' } }>
         <Box
           component="img"
           src={ hasImageError ? getFallbackImageUrl(post.id) : post.image_url }
           alt={ post.caption }
           onError={ () => setHasImageError(true) }
-          sx={ { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }
+          sx={ { width: '100%', height: '100%', maxHeight: '40vh', objectFit: 'cover', display: 'block' } }
         />
       </Box>
 
       { /* 하단: 게시물 내용 · 해시태그 */ }
       <Box
         sx={ {
-          flexShrink: 0,
-          maxHeight: '28vh',
+          flexGrow: 1,
           overflowY: 'auto',
           px: 2,
-          pt: 1.5,
-          pb: 1,
+          pt: 2,
+          pb: 1.5,
           display: 'flex',
           flexDirection: 'column',
-          gap: 1,
+          gap: 1.5,
         } }
       >
         <Typography
