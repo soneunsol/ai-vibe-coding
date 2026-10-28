@@ -4,15 +4,25 @@ on:
   schedule:
     # 주 3회 실행 (월, 수, 금 오전 9시 UTC = 오후 6시 KST)
     - cron: '0 9 * * 1,3,5'
-  workflow_dispatch:  # 수동 실행 가능
+  workflow_dispatch: # 수동 실행 가능
 
 jobs:
   ping-supabase:
     runs-on: ubuntu-latest
     steps:
-      - name: Ping Supabase Health Check
+      - name: Ping Supabase
         run: |
-          curl -s "${{ secrets.SUPABASE_URL }}/rest/v1/health_check?select=id&limit=1" \
+          # 테이블 의존 없이 Supabase REST API 루트 엔드포인트로 ping
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/" \
             -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}"
-          echo "Supabase ping successful!"
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}")
+
+          echo "HTTP Status: $HTTP_STATUS"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Supabase ping successful!"
+          else
+            echo "Supabase ping failed with status: $HTTP_STATUS"
+            exit 1
+          fi
