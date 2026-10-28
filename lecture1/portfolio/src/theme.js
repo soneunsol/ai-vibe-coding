@@ -43,9 +43,14 @@ const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        html: {
+          scrollbarWidth: 'none',
+          '&::-webkit-scrollbar': { display: 'none' },
+        },
         body: {
           scrollbarWidth: 'none',
-          '&.is-scrolling': {
+          '&::-webkit-scrollbar': { display: 'none' },
+          '&.is-scrolling, &.is-scrolling ~ *': {
             scrollbarWidth: 'thin',
             scrollbarColor: 'rgba(160,120,255,0.3) transparent',
           },
