@@ -10,10 +10,6 @@ html, body {
 html::-webkit-scrollbar, body::-webkit-scrollbar {
   display: none !important;
 }
-html.is-scrolling, body.is-scrolling {
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(160, 120, 255, 0.3) transparent !important;
-}
 body {
   font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
   background: #04040f;
