@@ -43,7 +43,8 @@ function PostDetailModal({
       <Box
         sx={ {
           position: 'absolute',
-          inset: 0,
+          top: 0,
+          bottom: 62,
           left: '50%',
           transform: 'translateX(-50%)',
           width: '100%',
