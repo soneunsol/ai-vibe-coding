@@ -9,6 +9,25 @@ body {
   background: #04040f;
   min-height: 100vh;
   overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+body:hover {
+  scrollbar-color: rgba(160, 120, 255, 0.3) transparent;
+}
+body::-webkit-scrollbar {
+  width: 6px;
+}
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+body::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+}
+body:hover::-webkit-scrollbar-thumb {
+  background: rgba(160, 120, 255, 0.3);
 }
 
 #root {
