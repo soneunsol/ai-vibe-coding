@@ -44,16 +44,10 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: {
         body: {
-          scrollbarColor: 'transparent transparent',
-          scrollbarWidth: 'thin',
-          '&::-webkit-scrollbar': { width: '6px' },
-          '&::-webkit-scrollbar-track': { background: 'transparent' },
-          '&::-webkit-scrollbar-thumb': { background: 'transparent', borderRadius: '3px' },
+          scrollbarWidth: 'none',
           '&.is-scrolling': {
+            scrollbarWidth: 'thin',
             scrollbarColor: 'rgba(160,120,255,0.3) transparent',
-          },
-          '&.is-scrolling::-webkit-scrollbar-thumb': {
-            background: 'rgba(160,120,255,0.3)',
           },
         },
       },
